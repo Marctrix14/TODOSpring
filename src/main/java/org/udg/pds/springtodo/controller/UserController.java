@@ -2,9 +2,9 @@ package org.udg.pds.springtodo.controller;
 
 import com.fasterxml.jackson.annotation.JsonView;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.udg.pds.springtodo.controller.exceptions.ControllerException;
+import org.udg.pds.springtodo.entity.Group;
 import org.udg.pds.springtodo.entity.User;
 import org.udg.pds.springtodo.entity.Views;
 import org.udg.pds.springtodo.service.UserService;
@@ -12,6 +12,8 @@ import org.udg.pds.springtodo.service.UserService;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
+import java.util.Collection;
+import java.util.Date;
 
 // This class is used to process all the authentication related URLs
 @RequestMapping(path="/users")
@@ -92,6 +94,16 @@ public class UserController extends BaseController {
     return BaseController.OK_MESSAGE;
   }
 
+
+  // NEW
+  @GetMapping(path="/{id}/groups")
+  @JsonView(Views.Private.class)
+  public Collection<Group> listAllGroups(HttpSession session,
+                                         @RequestParam(value = "from", required = false) Date from, @PathVariable("id") Long userId) {
+
+      getLoggedUser(session);
+      return userService.getGroups(userId);
+  }
 
   static class LoginUser {
     @NotNull

@@ -10,10 +10,12 @@ import org.springframework.stereotype.Service;
 import org.udg.pds.springtodo.entity.IdObject;
 import org.udg.pds.springtodo.entity.Tag;
 import org.udg.pds.springtodo.entity.User;
+import org.udg.pds.springtodo.entity.Group;
 import org.udg.pds.springtodo.repository.TagRepository;
 import org.udg.pds.springtodo.repository.TaskRepository;
 import org.udg.pds.springtodo.repository.UserRepository;
 import org.udg.pds.springtodo.service.TagService;
+import org.udg.pds.springtodo.service.GroupService;
 import org.udg.pds.springtodo.service.TaskService;
 import org.udg.pds.springtodo.service.UserService;
 
@@ -37,6 +39,10 @@ public class Global {
     @Autowired
     private
     TaskService taskService;
+
+    @Autowired
+    private
+    GroupService groupService;
 
     @Autowired
     private
@@ -102,7 +108,12 @@ public class Global {
             taskService.addTagsToTask(user.getId(), taskId.getId(), new ArrayList<Long>() {{
                 add(tag.getId());
             }});
-            userService.register("user", "user@hotmail.com", "0000");
+            User user2 = userService.register("user", "user@hotmail.com", "0000");
+            IdObject groupId = groupService.addGroup("GrupProva", "test inicial", user.getId());
+            // The next action needs to be done from Postman, because if not, a exception will be prompted
+            // with a message saying user2 is already a member of the group, I don't know why but because of this also the DB
+            // will not be loaded completely
+            groupService.addUserToGroup(user.getId(),user2.getId(), groupId.getId());
         }
 
     }
